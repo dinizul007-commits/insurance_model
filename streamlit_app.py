@@ -6,6 +6,10 @@ import pandas as pd
 # Make sure this matches what you trained/saved!
 model = joblib.load("insurance_rf_model.pkl")  # change to insurance_gbr_model.pkl if using GB
 
+if hasattr(model, "feature_names_in_"):
+    st.write("Model expects columns:", list(model.feature_names_in_))
+
+
 st.title("Medical Insurance Cost Predictor")
 st.write("Predict estimated insurance charges based on lifestyle and demographics.")
 
@@ -17,27 +21,23 @@ sex = st.selectbox("Sex", ["female", "male"])
 smoker = st.selectbox("Smoker", ["no", "yes"])
 
 if st.button("Predict insurance cost"):
-    X_raw = pd.DataFrame([{
+    # Build EXACT feature columns used in training
+    X_enc = pd.DataFrame([{
         "age": age,
-        "sex": sex,
-        "bmi": bmi,
-        "children": children,
-        "smoker": smoker
+        "bmi": float(bmi),
+        "children": int(children),
+        "sex_male": 1 if sex == "male" else 0,
+        "smoker_yes": 1 if smoker == "yes" else 0
     }])
 
-    X_enc = pd.get_dummies(X_raw, drop_first=True)
-
+    # If model has feature_names_in_, align just in case (safe)
     if hasattr(model, "feature_names_in_"):
         X_enc = X_enc.reindex(columns=model.feature_names_in_, fill_value=0)
 
-    # enforce consistent 0/1 ints for dummy columns
-    for c in ["sex_male", "smoker_yes"]:
-        if c in X_enc.columns:
-            X_enc[c] = X_enc[c].astype(int)
-
-    # debug display so you can SEE if smoker_yes changes
+    # Debug display (you should SEE smoker_yes flip 0/1 now)
     st.write("Encoded input sent to model:")
     st.dataframe(X_enc)
 
     pred = float(model.predict(X_enc)[0])
     st.success(f"Estimated insurance charges: ${pred:,.2f}")
+
