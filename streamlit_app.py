@@ -5,7 +5,7 @@ import pandas as pd
 # ------------------------------
 # Load trained model
 # ------------------------------
-model = joblib.load("insurance_gbr_model.pkl")  # change to insurance_gbr_model.pkl if using GB
+model = joblib.load("insurance_rf_model.pkl")  # change to insurance_gbr_model.pkl if using GB
 
 st.set_page_config(page_title="Medical Insurance Charges (USD)", layout="centered")
 
