@@ -5,11 +5,11 @@ import pandas as pd
 # ------------------------------
 # Load trained model
 # ------------------------------
-model = joblib.load("insurance_rf_model.pkl")
+model = joblib.load("insurance_gbr_model.pkl")
 
-st.set_page_config(page_title="Insurance Cost Predictor", layout="centered")
+st.set_page_config(page_title="Medical Insurance Cost Predictor", layout="centered")
 
-st.title("Medical Insurance Cost Predictor")
+st.title("Medical Expenses Cost Predictor")
 st.write("Predict estimated insurance charges based on lifestyle and demographics.")
 
 st.subheader("Enter your details")
